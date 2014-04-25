@@ -23,6 +23,8 @@
 #include "twi/master.h"
 #include <util/delay.h>
 
+#define F_TWI 400000L;
+
 //The I2C device address and read/write select bits, for the Read 
 //and Write bits, respectively.
 static const uint8_t device_address = 0x39;
@@ -31,8 +33,8 @@ static const uint8_t device_address = 0x39;
 union light_sensor_reading_union {
   uint16_t full_word;
   struct {
-    uint8_t high;
     uint8_t low;
+    uint8_t high;
   };
 };
 typedef union light_sensor_reading_union light_sensor_reading;
@@ -43,8 +45,8 @@ typedef union light_sensor_reading_union light_sensor_reading;
  */ 
 int main() {
 
-  uint8_t start_code;
-  light_sensor_reading reading;
+  volatile uint8_t start_code;
+  volatile light_sensor_reading reading;
 
   //Set up the microcontrollers's I2C hardware.
   set_up_twi_hardware();
@@ -53,22 +55,22 @@ int main() {
   //Turn on the sensor...
   //[ 0x72 0x80 [ 0x73 r ]
   start_twi_write_to(device_address);
-  i2c_write(0x80);
-  i2c_write(0x03);
+  send_via_twi(0x80);
+  send_via_twi(0x03);
   start_twi_read_from(device_address);
-  start_code = i2c_readNak();
-  i2c_stop();
+  start_code = read_via_twi(LastByte);
+  end_twi_packet();
 
   while(1) {
 
     //... and taken an ADC reading.
     //[ 0x72 0xAC [ 0x73 r r ]
     start_twi_write_to(device_address);
-    i2c_write(0xAC);
+    send_via_twi(0xAC);
     start_twi_read_from(device_address);
-    reading.low  = i2c_readAck();
-    reading.high = i2c_readNak();
-    i2c_stop();
+    reading.low  = read_via_twi(RequestMore);
+    reading.high = read_via_twi(LastByte);
+    end_twi_packet();
 
   }
   

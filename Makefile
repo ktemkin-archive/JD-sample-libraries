@@ -19,7 +19,7 @@
 #
 
 CC=avr-gcc
-CFLAGS=-mmcu=atmega328 -DF_CPU=16000000L -ggdb 
+CFLAGS=-mmcu=atmega328 -DF_CPU=16000000L -ggdb  -Wall -Wextra -Wpedantic -std=gnu11
 LDFLAGS=-mmcu=atmega328
 
 sample_twi_tsl2561.hex: sample_twi_tsl2561

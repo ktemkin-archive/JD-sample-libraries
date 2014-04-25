@@ -89,11 +89,34 @@
 
 #include <avr/io.h>
 
-/** defines the data direction (reading from I2C device) in i2c_start(),i2c_rep_start() */
-static const uint8_t TWI_READ = 1;
+/**
+ * Defines a direction constant used for reading from TWI devices.
+ */
 
-/** defines the data direction (writing to I2C device) in i2c_start(),i2c_rep_start() */
-static const uint8_t TWI_WRITE = 0;
+static const uint8_t TWI_LAST_BYTE = 0;
+
+
+static const uint8_t TWI_EXPECT_MORE = 1;
+
+/**
+ * Defines one of the two TWI data directions.
+ */ 
+enum TWIDataDirection_enum {
+  Read = 1,
+  Write = 0
+};
+typedef enum TWIDataDirection_enum TWIDataDirection;
+
+
+/**
+ * Defines the possible TWi read modes.
+ */ 
+enum TWIReadMode_enum {
+  RequestMore = 1,
+  NonLastByte = 1,
+  LastByte = 0
+};
+typedef enum TWIReadMode_enum TWIReadMode;
 
 
 /**
@@ -105,7 +128,7 @@ static const uint8_t TWI_WRITE = 0;
  * @param void
  * @return none
  */ 
-void set_up_twi_hardware(void);
+void set_up_twi_hardware();
 
 /**
  *
@@ -135,14 +158,6 @@ uint8_t start_twi_read_from(uint8_t address);
 uint8_t start_twi_write_to(uint8_t address);
 
 
-/** 
- @brief Terminates the data transfer and releases the I2C bus 
- @param void
- @return none
- */
-extern void i2c_stop(void);
-
-
 /**
  * Begins an TWI communication to a given address in either read or write mode.
  * Sends a start bit, the target address, and a driection bit.
@@ -154,61 +169,41 @@ extern void i2c_stop(void);
  * @retval 0 Returned if we can't communicate with the given device; e.g. if the device doesn't acknowledge communications.
  * @retval 1 Returned on success.
  */
-uint8_t start_twi_communication(uint8_t address, uint8_t direction);
+uint8_t start_twi_communication(uint8_t address, TWIDataDirection direction);
 
 
 /**
- @brief Issues a repeated start condition and sends address and transfer direction 
-
- @param   addr address and transfer direction of I2C device
- @retval  0 device accessible
- @retval  1 failed to access device
+ * Attempts to start an I2C communication. If the device responds that it's
+ * not available, retry until the device /is/ available.
+ *
+ * Use of this function is only appropriate in some limited circumstances,
+ * but it is included as to be a complete implementation of the Master I2C library.
  */
-extern unsigned char i2c_rep_start(unsigned char addr);
+void ensure_twi_communication(uint8_t address, TWIDataDirection direction);
 
-
-/**
- @brief Issues a start condition and sends address and transfer direction 
-   
- If device is busy, use ack polling to wait until device ready 
- @param    addr address and transfer direction of I2C device
- @return   none
- */
-extern void i2c_start_wait(unsigned char addr);
-
- 
-/**
- @brief Send one byte to I2C device
- @param    data  byte to be transfered
- @retval   0 write successful
- @retval   1 write failed
- */
-extern unsigned char i2c_write(unsigned char data);
-
-
-/**
- @brief    read one byte from the I2C device, request more data from device 
- @return   byte read from I2C device
- */
-extern unsigned char i2c_readAck(void);
-
-/**
- @brief    read one byte from the I2C device, read is followed by a stop condition 
- @return   byte read from I2C device
- */
-extern unsigned char i2c_readNak(void);
 
 /** 
- @brief    read one byte from the I2C device
- 
- Implemented as a macro, which calls either i2c_readAck or i2c_readNak
- 
- @param    ack 1 send ack, request more data from device<br>
-               0 send nak, read is followed by a stop condition 
- @return   byte read from I2C device
+ * Terminates TWI communication with the given bus. 
  */
-extern unsigned char i2c_read(unsigned char ack);
-#define i2c_read(ack)  (ack) ? i2c_readAck() : i2c_readNak(); 
+void end_twi_packet();
+
+ 
+/**
+ * Sends a single byte via the TWI interface.
+ *
+ * @param data The data to be transmitted via SPI.
+ * @return data True iff the sent data is succesfully acknolwedged by a device.
+ */ 
+uint8_t send_via_twi(uint8_t data);
+
+/**
+ * Reads a single byte via TWI, and the requests more.
+ *
+ * @param read_mode Specifies the read mode for the given TWI communication, 
+ *    which in turn specifies whether an additional byte is requested.
+ * @return The byte read via TWI.
+ */
+uint8_t read_via_twi(TWIReadMode read_mode);
 
 
 /**@}*/
