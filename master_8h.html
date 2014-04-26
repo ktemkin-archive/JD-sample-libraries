@@ -361,21 +361,6 @@ $(document).ready(function(){initNavTree('master_8h.html','');});
 <p>Performs a given bus pirate command.</p>
 <p>Supports the following features: {}, [], R/r, 0-255, 0b, 0h, &amp;</p>
 <p>See: <a href="http://dangerousprototypes.com/bus-pirate-manual/i2c-guide/">http://dangerousprototypes.com/bus-pirate-manual/i2c-guide/</a></p>
-<p>An additional command is also implemented: s: Requests a single byte, and then responds with a NAK.</p>
-<p>Important note! You'll need to replace your last "r" with an "s", or the TWI library will "lock up", as the AVR views the transmission as being incomplete.</p>
-<p>For each read, a pointer should be provided to a uint8_t target. For example:</p>
-<p>uint8_t hello; perform_bus_pirate_twi_command("[ 0x72 0x80 0x03 [ 0x73 s ]", &amp;hello);</p>
-<p>would read a single byte to the variable hello.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">command</td><td>The bus pirate command, as a null-terminated string. </td></tr>
-    <tr><td class="paramname">...</td><td>A single uint8_t * for each read command.</td></tr>
-  </table>
-  </dd>
-</dl>
-<p>Performs a given bus pirate command.</p>
-<p>Supports the following features: {}, [], R/r, 0-255, 0b, 0h, &amp;</p>
-<p>See: <a href="http://dangerousprototypes.com/bus-pirate-manual/i2c-guide/">http://dangerousprototypes.com/bus-pirate-manual/i2c-guide/</a></p>
 <p>Two additional commands are also implemented: s: Reads a single byte, and then responds with a NAK. w: Transmits a single byte, provided as an argument. This allows programatic control of transmission.</p>
 <p>Important note! You'll need to replace your last "r" with an "s", or the TWI library will "lock up", as the AVR views the transmission as being incomplete.</p>
 <p>For each read, a pointer should be provided to a uint8_t target. For example:</p>
@@ -643,7 +628,7 @@ $(document).ready(function(){initNavTree('master_8h.html','');});
           <td class="memname">void set_up_twi_hardware </td>
           <td>(</td>
           <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>twi_bitrate</em></td><td>)</td>
+          <td class="paramname"><em>i2c_clock_speed</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -654,16 +639,6 @@ $(document).ready(function(){initNavTree('master_8h.html','');});
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">uint32_t</td><td>The clock speed for the TWI interface, in Hz. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>none</dd></dl>
-<hr/>
- <h2>Public API Functions </h2>
-<p>Sets up the TWI hardware interface, preparing the TWI hardware for communications. Unless the TWI clock settings are adjusted, this method need only be called once.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">twi_clock_Speed</td><td>The clock speed for the TWI interface, in Hz. You must ensure that ((F_CPU / TWI_CLOCk_SPEED) - 16)/ 2 is less than 256, or this function won't work! </td></tr>
   </table>
   </dd>
 </dl>
@@ -796,20 +771,6 @@ $(document).ready(function(){initNavTree('master_8h.html','');});
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname">0</td><td>Returned if we can't communicate with the given device; e.g. if the device doesn't acknowledge communications. </td></tr>
-    <tr><td class="paramname">1</td><td>Returned on success.</td></tr>
-  </table>
-  </dd>
-</dl>
-<p>Begins a TWI packet intended to read from the provided address; or sends a repeated start condition. (This transmits a start bit, an address bit, and a direction bit.)</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">address</td><td>The device's TWI address. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="retval"><dt>Return values</dt><dd>
-  <table class="retval">
-    <tr><td class="paramname">0</td><td>Returned if we can't communicate with the given device; e.g. if the device doesn't acknowledge communications. </td></tr>
     <tr><td class="paramname">1</td><td>Returned on success. </td></tr>
   </table>
   </dd>
@@ -852,20 +813,6 @@ $(document).ready(function(){initNavTree('master_8h.html','');});
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname">0</td><td>Returned if we can't communicate with the given device; e.g. if the device doesn't acknowledge communications. </td></tr>
-    <tr><td class="paramname">1</td><td>Returned on success.</td></tr>
-  </table>
-  </dd>
-</dl>
-<p>Begins a TWI packet intended to write to the provided address; or sends a reapeated start condition. (This transmits a start bit, an address bit, and a direction bit.)</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">address</td><td>The device's TWI address. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="retval"><dt>Return values</dt><dd>
-  <table class="retval">
-    <tr><td class="paramname">0</td><td>Returned if we can't communicate with the given device; e.g. if the device doesn't acknowledge communications. </td></tr>
     <tr><td class="paramname">1</td><td>Returned on success. </td></tr>
   </table>
   </dd>
@@ -890,7 +837,7 @@ $(document).ready(function(){initNavTree('master_8h.html','');});
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_41b1d9bc16cdb044014c0b5b65110baf.html">twi</a></li><li class="navelem"><a class="el" href="master_8h.html">master.h</a></li>
-    <li class="footer">Generated on Sat Apr 26 2014 02:01:18 for JD Sample Libraries by
+    <li class="footer">Generated on Sat Apr 26 2014 02:17:28 for JD Sample Libraries by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

@@ -109,7 +109,16 @@ $(document).ready(function(){initNavTree('stdio_8c_source.html','');});
 <div class="title">stdio.c</div>  </div>
 </div><!--header-->
 <div class="contents">
-<a href="stdio_8c.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;</div>
+<a href="stdio_8c.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * EECE 387 Example Code</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> * AVR Standard I/O over UART: Universal Asynchronous Receiver / Transmitter </span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment"> * Allows you to use printf/scanf using your AVR and a USB-to-serial converter,</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="comment"> * like the Bus Pirate. If you&#39;re about to use this to gather debug information,</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="comment"> * you might want to see if the Logic Analyzer isn&#39;t a better fit to your needs.</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="comment"> */</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;</div>
 <div class="line"><a name="l00011"></a><span class="lineno"><a class="line" href="stdio_8c.html#a3387cdfaede0a0dd1db711fbff25cff6">   11</a></span>&#160;<span class="preprocessor">#define USART_STATUS        UCSR0A</span></div>
 <div class="line"><a name="l00012"></a><span class="lineno"><a class="line" href="stdio_8c.html#aeead5b044cdd23b4f70a5d736b57514f">   12</a></span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define READY_TO_TRANSMIT   UDRE0</span></div>
 <div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="stdio_8c.html#ae86cc6001add0228d54083a95a8ba98b">   13</a></span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define DATA_RECIEVED       RXC0</span></div>
@@ -137,11 +146,18 @@ $(document).ready(function(){initNavTree('stdio_8c_source.html','');});
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="keyword">static</span> FILE uart_transmit_pipe = FDEV_SETUP_STREAM(send_via_uart_stdio_compatible, 0, _FDEV_SETUP_WRITE);</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="keyword">static</span> FILE uart_receive_pipe  = FDEV_SETUP_STREAM(0, receieve_via_uart_stdio_compatible, _FDEV_SETUP_READ);</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="comment">/*</span></div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="comment"> * Sets up the device to use STDIO over serial.</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="comment"> */</span></div>
 <div class="line"><a name="l00041"></a><span class="lineno"><a class="line" href="stdio_8h.html#a5a19561fb7b57c3597222faba123532c">   41</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="stdio_8c.html#a5a19561fb7b57c3597222faba123532c">set_up_stdio_over_serial</a>() {</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <a class="code" href="stdio_8c.html#a85c532409350e1be776f30abd4472e1f">initialize_uart</a>();</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    set_up_special_files();</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;}</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="comment">/*</span></div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="comment"> * Sets up the raw UART (Universal Asynchronous Receiver/Transmitter) for general use.</span></div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="comment"> * Does not set up the UART for use with stdin/stdout/stderr.</span></div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="comment"> */</span></div>
 <div class="line"><a name="l00050"></a><span class="lineno"><a class="line" href="stdio_8h.html#a85c532409350e1be776f30abd4472e1f">   50</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="stdio_8c.html#a85c532409350e1be776f30abd4472e1f">initialize_uart</a>() {</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="comment">//These values are automatically generated by &lt;util/setbaud.h&gt;</span></div>
@@ -162,16 +178,29 @@ $(document).ready(function(){initNavTree('stdio_8c_source.html','');});
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    UCSR0B = (1 &lt;&lt; RXEN0)  | (1 &lt;&lt; TXEN0);   </div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;}</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="comment">/*</span></div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="comment"> * Sends the provided character over the serial line.</span></div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="comment"> */</span></div>
 <div class="line"><a name="l00073"></a><span class="lineno"><a class="line" href="stdio_8h.html#a4fb80b85cb441f06b95740e52b0e9425">   73</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="stdio_8c.html#a4fb80b85cb441f06b95740e52b0e9425">send_via_uart</a>(<span class="keywordtype">char</span> c) {</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;  wait_until_ready_to_transmit();</div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;  place_into_transmit_buffer(c);</div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;}</div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="comment">/*</span></div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="comment"> * Waits for and recieves a single character over the serial line.</span></div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="comment"> * This kind of function is known as a &quot;blocking&quot; function-- as execution</span></div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="comment"> * can&#39;t continue until it&#39;s complete!</span></div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="comment"> */</span> </div>
 <div class="line"><a name="l00084"></a><span class="lineno"><a class="line" href="stdio_8h.html#aa60938b92d8ad33a80317e072a8051f8">   84</a></span>&#160;<span class="keywordtype">char</span> <a class="code" href="stdio_8c.html#aa60938b92d8ad33a80317e072a8051f8">receieve_via_uart</a>() {</div>
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;  wait_until_data_is_received();</div>
 <div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;  <span class="keywordflow">return</span> read_contents_of_receive_buffer();</div>
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;}</div>
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="comment">/*</span></div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;<span class="comment"> * Sets up the standard &#39;pipes&#39; (stdio, stdout, and stderr) to transmit</span></div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;<span class="comment"> * over the serial line.</span></div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;<span class="comment"> */</span></div>
 <div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> set_up_special_files() {</div>
 <div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;</div>
 <div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;  <span class="comment">//Replace the standard output and standard error with our new transmission </span></div>
@@ -183,6 +212,9 @@ $(document).ready(function(){initNavTree('stdio_8c_source.html','');});
 <div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;  stdin = &amp;uart_receive_pipe;</div>
 <div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;}</div>
 <div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;<span class="comment">/*</span></div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;<span class="comment"> * A wrapper for send_via_uart which is compatible with the standard I/O functions.</span></div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;<span class="comment"> */</span></div>
 <div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">int</span> send_via_uart_stdio_compatible(<span class="keywordtype">char</span> character, FILE * output_file) {</div>
 <div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160; </div>
 <div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;  <span class="comment">//The standard I/O functions end their line with &#39;\n&#39;, but most serial terminals</span></div>
@@ -196,23 +228,41 @@ $(document).ready(function(){initNavTree('stdio_8c_source.html','');});
 <div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;  <span class="keywordflow">return</span> 1;</div>
 <div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;}</div>
 <div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;<span class="comment">/*</span></div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;<span class="comment"> * A wrapper for receieve_via_uart which is compatible with the standard I/O functions.</span></div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;<span class="comment"> */</span></div>
 <div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">int</span> receieve_via_uart_stdio_compatible(FILE * input_file) {</div>
 <div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;  <span class="keywordflow">return</span> <a class="code" href="stdio_8c.html#aa60938b92d8ad33a80317e072a8051f8">receieve_via_uart</a>();</div>
 <div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;}</div>
 <div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;<span class="comment">/*</span></div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;<span class="comment"> * Places a single character directly into the transmit buffer,</span></div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;<span class="comment"> * initiating transmission.</span></div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;<span class="comment"> */</span> </div>
 <div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> place_into_transmit_buffer(<span class="keywordtype">char</span> c) {</div>
 <div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;    UDR0 = c; </div>
 <div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;}</div>
 <div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;<span class="comment">/*</span></div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;<span class="comment"> * Returns the current content of the recieve buffer,</span></div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;<span class="comment"> * and (indirectly) clears the read buffer.</span></div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;<span class="comment"> */</span> </div>
 <div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">char</span> read_contents_of_receive_buffer() {</div>
 <div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;  <span class="keywordflow">return</span> UDR0;</div>
 <div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;}</div>
 <div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;<span class="comment">/*</span></div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;<span class="comment"> * Waits until the device is ready to transmit-- we may have to wait</span></div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;<span class="comment"> * if the device still is in the proces of transmitting data.</span></div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;<span class="comment"> */</span>  </div>
 <div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> wait_until_ready_to_transmit() {</div>
 <div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;    loop_until_bit_is_set(<a class="code" href="stdio_8c.html#a3387cdfaede0a0dd1db711fbff25cff6">USART_STATUS</a>, <a class="code" href="stdio_8c.html#aeead5b044cdd23b4f70a5d736b57514f">READY_TO_TRANSMIT</a>);</div>
 <div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;}</div>
 <div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;</div>
 <div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;<span class="comment">/*</span></div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;<span class="comment"> * Waits until we&#39;ve recieved at least a single byte of data.</span></div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;<span class="comment"> */</span></div>
 <div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> wait_until_data_is_received() {</div>
 <div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;    loop_until_bit_is_set(<a class="code" href="stdio_8c.html#a3387cdfaede0a0dd1db711fbff25cff6">USART_STATUS</a>, <a class="code" href="stdio_8c.html#ae86cc6001add0228d54083a95a8ba98b">DATA_RECIEVED</a>);</div>
 <div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;}</div>
@@ -230,7 +280,7 @@ $(document).ready(function(){initNavTree('stdio_8c_source.html','');});
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_43ad556cc113861ad71aa7c6f25342a2.html">uart</a></li><li class="navelem"><a class="el" href="stdio_8c.html">stdio.c</a></li>
-    <li class="footer">Generated on Sat Apr 26 2014 02:01:18 for JD Sample Libraries by
+    <li class="footer">Generated on Sat Apr 26 2014 02:17:28 for JD Sample Libraries by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

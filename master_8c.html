@@ -518,14 +518,6 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Sends a TWI start condition.</p>
-<dl class="retval"><dt>Return values</dt><dd>
-  <table class="retval">
-    <tr><td class="paramname">0</td><td>Returned if we can't communicate with the given device; e.g. if the device doesn't acknowledge communications. </td></tr>
-    <tr><td class="paramname">1</td><td>Returned on success. </td></tr>
-  </table>
-  </dd>
-</dl>
 
 <p>Definition at line <a class="el" href="master_8c_source.html#l00137">137</a> of file <a class="el" href="master_8c_source.html">master.c</a>.</p>
 
@@ -593,19 +585,17 @@ Functions</h2></td></tr>
           <td class="memname">void set_up_twi_hardware </td>
           <td>(</td>
           <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>twi_bitrate</em></td><td>)</td>
+          <td class="paramname"><em>i2c_clock_speed</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>Sets up the TWI hardware interface. </p>
-<hr/>
- <h2>Public API Functions </h2>
 <p>Sets up the TWI hardware interface, preparing the TWI hardware for communications. Unless the TWI clock settings are adjusted, this method need only be called once.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">twi_clock_Speed</td><td>The clock speed for the TWI interface, in Hz. You must ensure that ((F_CPU / TWI_CLOCk_SPEED) - 16)/ 2 is less than 256, or this function won't work! </td></tr>
+    <tr><td class="paramname">uint32_t</td><td>The clock speed for the TWI interface, in Hz. </td></tr>
   </table>
   </dd>
 </dl>
@@ -727,7 +717,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Begins a TWI packet intended to read from the provided address; or sends a repeated start condition. (This transmits a start bit, an address bit, and a direction bit.)</p>
+<p>Begins a TWI packet intended to read from the provided address. (This transmits a start bit, an address bit, and a direction bit.)</p>
+<p>This method should only be used for the first time sending a start bit. To send a start bit in the middle of a packet, use restart_communication_as_read_from.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">address</td><td>The device's TWI address. </td></tr>
@@ -768,7 +759,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Begins a TWI packet intended to write to the provided address; or sends a reapeated start condition. (This transmits a start bit, an address bit, and a direction bit.)</p>
+<p>Begins a TWI packet intended to write to the provided address. (This transmits a start bit, an address bit, and a direction bit.)</p>
+<p>This method should only be used for the first time sending a start bit. To send a start bit in the middle of a packet, use restart_communication_as_write_to.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">address</td><td>The device's TWI address. </td></tr>
@@ -802,7 +794,7 @@ Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_41b1d9bc16cdb044014c0b5b65110baf.html">twi</a></li><li class="navelem"><a class="el" href="master_8c.html">master.c</a></li>
-    <li class="footer">Generated on Sat Apr 26 2014 02:01:18 for JD Sample Libraries by
+    <li class="footer">Generated on Sat Apr 26 2014 02:17:28 for JD Sample Libraries by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

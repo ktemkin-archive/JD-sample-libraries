@@ -176,8 +176,6 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>EECE 387 Example Code AVR Standard I/O over UART: Universal Asynchronous Receiver / Transmitter</p>
-<p>Allows you to use printf/scanf using your AVR and a USB-to-serial converter, like the Bus Pirate. If you're about to use this to gather debug information, you might want to see if the Logic Analyzer isn't a better fit to your needs. </p>
 
 <p>Definition at line <a class="el" href="stdio_8c_source.html#l00011">11</a> of file <a class="el" href="stdio_8c_source.html">stdio.c</a>.</p>
 
@@ -210,7 +208,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Sets up the raw UART (Universal Asynchronous Receiver/Transmitter) for general use. Does not set up the UART for use with stdin/stdout/stderr. </p>
+<p>Sets up serial communications at 19200 baud (a measure of communications frequency) with 8-bit data packets, no parity, 1 stop bit, and no flow control; but does not set up any of the standard I/O functions.</p>
+<p>Most of these match the defaults for the Bus Pirate. </p>
 
 <p>Definition at line <a class="el" href="stdio_8c_source.html#l00050">50</a> of file <a class="el" href="stdio_8c_source.html">stdio.c</a>.</p>
 
@@ -249,8 +248,7 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Waits for and recieves a single character over the serial line.</p>
-<p>This kind of function is known as a "blocking" function&ndash; as execution can't continue until it's complete! </p>
+<p>Receives a single character over the UART. If no characters have been receieved, this function will wait until the device receives at least one. </p>
 
 <p>Definition at line <a class="el" href="stdio_8c_source.html#l00084">84</a> of file <a class="el" href="stdio_8c_source.html">stdio.c</a>.</p>
 <div class="fragment"><div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;                         {</div>
@@ -273,7 +271,7 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Sends the provided character over the serial line. </p>
+<p>Sends a single character directly over the UART. If the UART is busy, this function will wait ('block') until it is free. </p>
 
 <p>Definition at line <a class="el" href="stdio_8c_source.html#l00073">73</a> of file <a class="el" href="stdio_8c_source.html">stdio.c</a>.</p>
 <div class="fragment"><div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;                           {</div>
@@ -295,7 +293,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Sets up the device to use STDIO over serial. </p>
+<p>Sets up serial communications at 19200 baud (a measure of communications frequency) with 8-bit data packets, no parity, 1 stop bit, and no flow control; and sets up special "standard pipes" (stdin/stderr/stdout) for use with printf and scanf.</p>
+<p>Most of these match the defaults for the Bus Pirate. </p>
 
 <p>Definition at line <a class="el" href="stdio_8c_source.html#l00041">41</a> of file <a class="el" href="stdio_8c_source.html">stdio.c</a>.</p>
 
@@ -316,7 +315,7 @@ Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_43ad556cc113861ad71aa7c6f25342a2.html">uart</a></li><li class="navelem"><a class="el" href="stdio_8c.html">stdio.c</a></li>
-    <li class="footer">Generated on Sat Apr 26 2014 02:01:18 for JD Sample Libraries by
+    <li class="footer">Generated on Sat Apr 26 2014 02:17:28 for JD Sample Libraries by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

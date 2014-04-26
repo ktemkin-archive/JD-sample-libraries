@@ -106,15 +106,28 @@ $(document).ready(function(){initNavTree('index.html','');});
 <div class="textblock"><p>Dirt-simple sample libraries for EECE 387. These libraries are intended to be minimalist samples&ndash; they don't take advantage of more complex hardware features such as interrupt synchronization.</p>
 <h2>Libraries </h2>
 <ul>
-<li>A <em>Two Wire Interface ("I2C") master</em> library, which allows simple control of an I2C device using a bus-pirate-like syntax.</li>
-<li>A <em>uart-over-stdio</em> library, which is conveneint for simple serial monitors. </li>
+<li>A <em>Two Wire Interface ("I2C") master</em> library, which allows simple control of an I2C device using a bus-pirate-like syntax. See <a href="http://ktemkin.github.io/JD-sample-libraries/master_8h.html">the documentation for <code>twi/master.h</code></a>, or the samples below.</li>
+<li>A <em>uart-over-stdio</em> library, which is conveneint for simple serial monitors. See <a href="http://ktemkin.github.io/JD-sample-libraries/stdio_8h.html">The documentation for <code>uart/stdio.h</code>, or the samples below.</a></li>
+</ul>
+<h2>Example </h2>
+<p>A simple TWI interface using <a href="http://dangerousprototypes.com/bus-pirate-manual/i2c-guide/">Bus Pirate</a>-like syntax, and stdio over serial. (Compatible with Arduino boards!)</p>
+<p>```C #include "uart/stdio.h" #include "twi/master.h"</p>
+<p>int <a class="el" href="sample__twi__tsl2561_8c.html#ae66f6b31b5ad750f1fe042a706a4e3d4">main()</a> {</p>
+<p>//Set up an I2c communication at 100kHz. set_up_twi_hardware(100000);</p>
+<p>//And take repeated light sensor readings. while(1) { perform_bus_pirate_twi_command("[ 0x72 0xAC [ 0x73 r s ]", &amp;reading.low, &amp;reading.high); printf("Sensor reading: %u\n", reading.full); _delay_ms(100); }</p>
+<p>}</p>
+<p>```</p>
+<h2>Samples </h2>
+<p>For more detailed examples, see the top-level code files. Annotated source:</p>
+<ul>
+<li><a href="http://ktemkin.github.io/JD-sample-libraries/sample__twi__tsl2561_8c.html">TSL 2561 Demo Serial UART Demo </a></li>
 </ul>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Sat Apr 26 2014 02:01:18 for JD Sample Libraries by
+    <li class="footer">Generated on Sat Apr 26 2014 02:17:28 for JD Sample Libraries by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>
