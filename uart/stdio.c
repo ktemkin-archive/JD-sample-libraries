@@ -1,4 +1,4 @@
-/**
+/*
  * EECE 387 Example Code
  * AVR Standard I/O over UART: Universal Asynchronous Receiver / Transmitter 
  *
@@ -35,7 +35,7 @@ static inline int receieve_via_uart_stdio_compatible(FILE * pipe_to_receive_into
 static FILE uart_transmit_pipe = FDEV_SETUP_STREAM(send_via_uart_stdio_compatible, 0, _FDEV_SETUP_WRITE);
 static FILE uart_receive_pipe  = FDEV_SETUP_STREAM(0, receieve_via_uart_stdio_compatible, _FDEV_SETUP_READ);
 
-/**
+/*
  * Sets up the device to use STDIO over serial.
  */
 void set_up_stdio_over_serial() {
@@ -43,7 +43,7 @@ void set_up_stdio_over_serial() {
     set_up_special_files();
 }
 
-/**
+/*
  * Sets up the raw UART (Universal Asynchronous Receiver/Transmitter) for general use.
  * Does not set up the UART for use with stdin/stdout/stderr.
  */
@@ -67,7 +67,7 @@ void initialize_uart() {
     UCSR0B = (1 << RXEN0)  | (1 << TXEN0);   
 }
 
-/**
+/*
  * Sends the provided character over the serial line.
  */
 void send_via_uart(char c) {
@@ -75,7 +75,7 @@ void send_via_uart(char c) {
   place_into_transmit_buffer(c);
 }
 
-/**
+/*
  * Waits for and recieves a single character over the serial line.
  *
  * This kind of function is known as a "blocking" function-- as execution
@@ -86,7 +86,7 @@ char receieve_via_uart() {
   return read_contents_of_receive_buffer();
 }
 
-/**
+/*
  * Sets up the standard 'pipes' (stdio, stdout, and stderr) to transmit
  * over the serial line.
  */
@@ -101,7 +101,7 @@ static inline void set_up_special_files() {
   stdin = &uart_receive_pipe;
 }
 
-/**
+/*
  * A wrapper for send_via_uart which is compatible with the standard I/O functions.
  */
 static inline int send_via_uart_stdio_compatible(char character, FILE * output_file) {
@@ -117,14 +117,14 @@ static inline int send_via_uart_stdio_compatible(char character, FILE * output_f
   return 1;
 }
 
-/**
+/*
  * A wrapper for receieve_via_uart which is compatible with the standard I/O functions.
  */
 static inline int receieve_via_uart_stdio_compatible(FILE * input_file) {
   return receieve_via_uart();
 }
 
-/**
+/*
  * Places a single character directly into the transmit buffer,
  * initiating transmission.
  */ 
@@ -132,7 +132,7 @@ static inline void place_into_transmit_buffer(char c) {
     UDR0 = c; 
 }
 
-/**
+/*
  * Returns the current content of the recieve buffer,
  * and (indirectly) clears the read buffer.
  */ 
@@ -140,7 +140,7 @@ static inline char read_contents_of_receive_buffer() {
   return UDR0;
 }
 
-/**
+/*
  * Waits until the device is ready to transmit-- we may have to wait
  * if the device still is in the proces of transmitting data.
  */  
@@ -149,7 +149,7 @@ static inline void wait_until_ready_to_transmit() {
 }
 
 
-/**
+/*
  * Waits until we've recieved at least a single byte of data.
  */
 static inline void wait_until_data_is_received() {

@@ -19,13 +19,13 @@
 #endif
 
 
-/**
+/*
  * -------------------------------------
  * Private API Functions
  * -------------------------------------
  */
 
-/**
+/*
  * Performs a simple TWI write, and then returns the resultant status.
  *
  * @param data The byte of data to be transmitted...A
@@ -33,12 +33,12 @@
  */ 
 static uint8_t raw_twi_write(uint8_t data);
 
-/**
+/*
  * Waits for any active TWI communications to complete.
  */  
 static inline void wait_for_twi_operation_to_complete();
 
-/**
+/*
  * Given a TWI prescaler value, determines the amount of clock periods necessary to
  * reach a given frequency.
  */ 
@@ -54,13 +54,13 @@ static inline uint32_t clock_periods_from_prescaler(uint32_t target_speed, uint3
 }
 
 
-/**
+/*
  * -------------------------------------
  * Public API Functions
  * -------------------------------------
  */
 
-/**
+/*
  * Sets up the TWI hardware interface, preparing the TWI hardware for
  * communications. Unless the TWI clock settings are adjusted, this
  * method need only be called once.
@@ -104,7 +104,7 @@ void set_up_twi_hardware(uint32_t twi_bitrate)
 
 }
 
-/**
+/*
  * Begins a TWI packet intended to read from the provided address; or sends a repeated start condition.
  * (This transmits a start bit, an address bit, and a direction bit.)
  *
@@ -116,7 +116,7 @@ uint8_t start_twi_read_from(uint8_t address) {
   return start_twi_communication(address, Read);
 }
 
-/**
+/*
  * Begins a TWI packet intended to write to the provided address; or sends a reapeated start condition.
  * (This transmits a start bit, an address bit, and a direction bit.)
  *
@@ -128,7 +128,7 @@ uint8_t start_twi_write_to(uint8_t address) {
   return start_twi_communication(address, Write);
 }
 
-/**
+/*
  * Sends a TWI start condition.
  * 
  * @retval 0 Returned if we can't communicate with the given device; e.g. if the device doesn't acknowledge communications.
@@ -153,7 +153,7 @@ uint8_t send_twi_start_condition() {
 }
 
 
-/**
+/*
  * Begins an TWI communication to a given address in either read or write mode.
  * Sends a start bit, the target address, and a driection bit.
  *
@@ -183,7 +183,7 @@ uint8_t start_twi_communication(uint8_t address, TWIDataDirection direction)
 }
 
 
-/**
+/*
  * Performs a simple TWI write, and then returns the resultant status.
  *
  * @param data The byte of data to be transmitted...A
@@ -210,7 +210,7 @@ static uint8_t raw_twi_write(uint8_t data) {
 } 
 
 
-/**
+/*
  * Waits for any active TWI communications to complete.
  */  
 static inline void wait_for_twi_operation_to_complete() {
@@ -220,7 +220,7 @@ static inline void wait_for_twi_operation_to_complete() {
 }
 
 
-/**
+/*
  * Attempts to start an TWI communication. If the device responds that it's
  * not available, retry until the device /is/ available.
  *
@@ -259,7 +259,7 @@ void ensure_twi_communication(uint8_t address, TWIDataDirection direction)
 }
 
 
-/** 
+/* 
  * Terminates TWI communication with the given bus. 
  */
 void end_twi_packet()
@@ -277,7 +277,7 @@ void end_twi_packet()
 }
 
 
-/**
+/*
  * Sends a single byte via the TWI interface.
  *
  * @param data The data to be transmitted via SPI.
@@ -293,7 +293,7 @@ uint8_t send_via_twi(uint8_t data)
 }
 
 
-/**
+/*
  * Reads a single byte via TWI, and the requests more.
  *
  * @param read_mode Specifies the read mode for the given TWI communication, 
@@ -316,7 +316,7 @@ uint8_t read_via_twi(TWIReadMode read_mode)
     return TWDR;
 }
 
-/**
+/*
  * Performs a given bus pirate command.
  *
  * Supports the following features:
