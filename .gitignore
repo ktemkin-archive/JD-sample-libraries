@@ -1,2 +1,3 @@
 *.hex
 sample_twi_tsl2561
+.gdbinit

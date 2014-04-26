@@ -18,17 +18,34 @@
 # using a modified version of Peter Fleury's I2C Master Library. 
 #
 
+DEVICE=atmega328p
 CC=avr-gcc
-CFLAGS=-mmcu=atmega328 -DF_CPU=16000000L -ggdb  -Wall -Wextra -Wpedantic -std=gnu11
-LDFLAGS=-mmcu=atmega328
+CFLAGS=-mmcu=${DEVICE} -DF_CPU=16000000L -ggdb  -Wall -Wextra -Wpedantic -std=gnu11 -Os
+LDFLAGS=-mmcu=${DEVICE}
 
-sample_twi_tsl2561.hex: sample_twi_tsl2561
+all: sample_twi_tsl2561.hex sample_uart_stdio.hex
+
+#TWI Sample: TSL2561
+sample_twi_tsl2561: sample_twi_tsl2561.o twi/master.o uart/stdio.o
+sample_twi_tsl2561.o: sample_twi_tsl2561.c twi/master.h uart/stdio.h
+
+#UART stdio sample
+sample_uart_stdio: sample_uart_stdio.o uart/stdio.o
+sample_uart_stdio.o: sample_uart_stdio.c uart/stdio.h
+
+#Libraries
+twi/master.o: twi/master.c twi/master.h
+uart/stdio.o: uart/stdio.c uart/stdio.h
+
+#General rules
+
+%.hex: %
 	avr-objcopy -O ihex $^ $^.hex
+	echo
+	avr-size --mcu=${DEVICE} --format=avr $^
+	echo $^
+	echo
 
 clean:
 	rm -f **/*.o **/*.hex *.o *.hex
 	find . -perm +100 -type f -delete
-
-sample_twi_tsl2561: sample_twi_tsl2561.o twi/master.o
-sample_twi_tsl2561.o: sample_twi_tsl2561.c twi/master.h
-twi/master.o: twi/master.c twi/master.h

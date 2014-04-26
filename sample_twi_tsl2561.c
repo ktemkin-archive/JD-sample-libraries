@@ -21,17 +21,23 @@
  */
 
 #include "twi/master.h"
+#include "uart/stdio.h"
+
 #include <util/delay.h>
 
-#define F_TWI 400000L;
-
-//The I2C device address and read/write select bits, for the Read 
-//and Write bits, respectively.
-static const uint8_t device_address = 0x39;
-
-
+/**
+ * Simple data structure which defines a two-byte piece of data.
+ *
+ * This "union" allows us to access the two-byte data into two ways:
+ * as a pair of low and high bytes (var.low and var.high), or as a
+ * single 16-bit unsigned integer (var.full). 
+ *
+ * This is convenient for intepreting our light sensor data!
+ */ 
 union light_sensor_reading_union {
-  uint16_t full_word;
+
+  uint16_t full;
+
   struct {
     uint8_t low;
     uint8_t high;
@@ -45,36 +51,50 @@ typedef union light_sensor_reading_union light_sensor_reading;
  */ 
 int main() {
 
-  volatile uint8_t start_code;
-  volatile light_sensor_reading reading;
+  uint8_t start_code, device_id;
+  light_sensor_reading reading;
 
-  //Set up the microcontrollers's I2C hardware.
-  set_up_twi_hardware();
+  //Set up stdio over the device's UART.
+  set_up_stdio_over_serial();
+
+  //Set up the microcontrollers's I2C hardware, running at 100kHz.
+  set_up_twi_hardware(100000);
   _delay_ms(1);
 
-  //Turn on the sensor...
-  //[ 0x72 0x80 [ 0x73 r ]
-  start_twi_write_to(device_address);
-  send_via_twi(0x80);
-  send_via_twi(0x03);
-  start_twi_read_from(device_address);
-  start_code = read_via_twi(LastByte);
+  //Enable the sensor's internal ADC.
+  //Note that we're using almost exactly the same command as used when communicating
+  //via Bus Pirate-- there's only one small difference: the last "r" has been replaced with an "s",
+  //indicating that we expect no further data.
+  perform_bus_pirate_twi_command("[ 0x72 0x80 0x03 [ 0x73 s ]", &start_code);
+
+  //If the two LSBs of the start code were 0b11, we've started the device successfully!
+  if((start_code & 0x03) == 0x03) {
+    printf("Sensor enabled succesfully!\n");
+  }
+
+  //Read the device's ID:
+  perform_bus_pirate_twi_command("[ 0x72 0x8A [ 0x73 s ]", &device_id);
+  printf("Read device ID: 0x%x\n", device_id);
+
+  //Alternatively, one can implement the I2C communications manually, rather
+  //than in bus pirate format. This is almost always faster!
+  //
+  //Realistically, you'd want these constants abstracted to somewhere else
+  //in non-demonstation code.
+  start_twi_write_to(0x39);
+  send_via_twi(0x8A);
+  start_twi_read_from(0x39);
+  device_id = read_via_twi(LastByte);
   end_twi_packet();
+  printf("Re-read device ID: 0x%x\n", device_id);
 
+  //And take repeated light sensor readings.
   while(1) {
-
-    //... and taken an ADC reading.
-    //[ 0x72 0xAC [ 0x73 r r ]
-    start_twi_write_to(device_address);
-    send_via_twi(0xAC);
-    start_twi_read_from(device_address);
-    reading.low  = read_via_twi(RequestMore);
-    reading.high = read_via_twi(LastByte);
-    end_twi_packet();
-
+    perform_bus_pirate_twi_command("[ 0x72 0xAC [ 0x73 r s ]", &reading.low, &reading.high);
+    printf("Sensor reading: %u\n", reading.full);
+    _delay_ms(100);
   }
   
-
   return 0;
 
 }

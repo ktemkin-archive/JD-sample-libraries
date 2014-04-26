@@ -1,81 +1,82 @@
-#ifndef _I2CMASTER_H
-#define _I2CMASTER_H   1
-/************************************************************************* 
-* Title:    C include file for the I2C master interface 
-*           (i2cmaster.S or twimaster.c)
-* Author:   Peter Fleury <pfleury@gmx.ch>  http://jump.to/fleury
-* File:     $Id: i2cmaster.h,v 1.10 2005/03/06 22:39:57 Peter Exp $
-* Software: AVR-GCC 3.4.3 / avr-libc 1.2.3
-* Target:   any AVR device
-* Usage:    see Doxygen manual
-**************************************************************************/
+/**
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.*
+ *
+ *  EECE 387 Example Code
+ *  Simple TWI (Two Wire Interface) library for TWI-enabled AVRs.
+ *  
+ *  Kyle J. Temkin <ktemkin@binghamton.edu>
+ *  Peter Fleury <pfleury@gmx.ch>
+ *
+ *  This library is based on the I2C Master Library by Peter Fleury (http://jump.to/fleury),
+ *  which is in turn based on the contents of the AVR300.
+ */
+
+
+#ifndef _TWI_MASTER_H__
+#define _TWI_MASTER_H__
 
 #include <stdbool.h>
+#include <stdarg.h>
+#include <inttypes.h>
+#include <compat/twi.h>
+#include <util/delay.h>
 
 #ifdef DOXYGEN
 /**
- @defgroup pfleury_ic2master I2C Master library
- @code #include <i2cmaster.h> @endcode
-  
- @brief I2C (TWI) Master Software Library
+ @brief Software Library for TWI Masters
 
- Basic routines for communicating with I2C slave devices. This single master 
- implementation is limited to one bus master on the I2C bus. 
+ Basic routines for communicating with TWI slave devices. This single master 
+ implementation is limited to one bus master on the TWI bus. 
 
- This I2c library is implemented as a compact assembler software implementation of the I2C protocol 
+ This I2c library is implemented as a compact assembler software implementation of the TWI protocol 
  which runs on any AVR (i2cmaster.S) and as a TWI hardware interface for all AVR with built-in TWI hardware (twimaster.c).
  Since the API for these two implementations is exactly the same, an application can be linked either against the
- software I2C implementation or the hardware I2C implementation.
+ software TWI implementation or the hardware TWI implementation.
 
- Use 4.7k pull-up resistor on the SDA and SCL pin.
+ Use an appropriately sized pull-up resistor on the SDA and SCL pin. For testing, a 4.7k resistor is usually fine.
  
- Adapt the SCL and SDA port and pin definitions and eventually the delay routine in the module 
- i2cmaster.S to your target when using the software I2C implementation ! 
- 
- Adjust the  CPU clock frequence F_CPU in twimaster.c or in the Makfile when using the TWI hardware implementaion.
-
- @note 
-    The module i2cmaster.S is based on the Atmel Application Note AVR300, corrected and adapted 
-    to GNU assembler and AVR-GCC C call interface.
-    Replaced the incorrect quarter period delays found in AVR300 with 
-    half period delays. 
-    
- @author Peter Fleury pfleury@gmx.ch  http://jump.to/fleury
-
  @par API Usage Example
-  The following code shows typical usage of this library, see example test_i2cmaster.c
+  The following code shows typical usage of this library. See example sample_twi_tsl2561.
 
  @code
+  #include "twi/master.h"
+  #include <util/delay.h>
 
- #include <i2cmaster.h>
+  int main() {
 
+    uint8_t device_id;
 
- #define Dev24C02  0xA2      // device address of EEPROM 24C02, see datasheet
+    //Set up the microcontrollers's I2C hardware, running at 100kHz.
+    set_up_twi_hardware(100000);
+    _delay_ms(1);
 
- int main(void)
- {
-     unsigned char ret;
+    //Read the device's ID-- simple, but less optimal method.
+    perform_bus_pirate_twi_command("[ 0x72 0x8A [ 0x73 r ]", &device_id);
 
-     i2c_init();                             // initialize I2C library
+    //Read the device's ID-- more optimal method.
+    start_twi_write_to(0x39);
+    send_via_twi(0x8A);
+    start_twi_read_from(0x39);
+    device_id = read_via_twi(LastByte);
+    end_twi_packet();
+    printf("Re-read device ID: 0x%x\n", device_id);
 
-     // write 0x75 to EEPROM address 5 (Byte Write) 
-     i2c_start_wait(Dev24C02+I2C_WRITE);     // set device address and write mode
-     i2c_write(0x05);                        // write address = 5
-     i2c_write(0x75);                        // write value 0x75 to EEPROM
-     i2c_stop();                             // set stop conditon = release bus
+    //Wait forever.
+    while(1);
+    return 0;
 
-
-     // read previously written value back from EEPROM address 5 
-     i2c_start_wait(Dev24C02+I2C_WRITE);     // set device address and write mode
-
-     i2c_write(0x05);                        // write address = 5
-     i2c_rep_start(Dev24C02+I2C_READ);       // set device address and read mode
-
-     ret = i2c_readNak();                    // read one byte from EEPROM
-     i2c_stop();
-
-     for(;;);
- }
+  }
  @endcode
 
 */
@@ -83,20 +84,11 @@
 
 /**@{*/
 
-#if (__GNUC__ * 100 + __GNUC_MINOR__) < 304
-#error "This library requires AVR-GCC 3.4 or later, update to newer AVR-GCC compiler !"
-#endif
-
 #include <avr/io.h>
 
 /**
  * Defines a direction constant used for reading from TWI devices.
  */
-
-static const uint8_t TWI_LAST_BYTE = 0;
-
-
-static const uint8_t TWI_EXPECT_MORE = 1;
 
 /**
  * Defines one of the two TWI data directions.
@@ -120,15 +112,15 @@ typedef enum TWIReadMode_enum TWIReadMode;
 
 
 /**
- * Sets up the I2C hardware interface, preparing the I2C hardware for
+ * Sets up the TWI hardware interface, preparing the TWI hardware for
  * communications. Unless the TWI clock settings are adjusted, this
  * method need only be called once.
  *
- * @brief Sets up the I2C hardware interface.
- * @param void
+ * @brief Sets up the TWI hardware interface.
+ * @param uint32_t The clock speed for the TWI interface, in Hz.
  * @return none
  */ 
-void set_up_twi_hardware();
+void set_up_twi_hardware(uint32_t i2c_clock_speed);
 
 /**
  *
@@ -138,7 +130,7 @@ void set_up_twi_hardware();
  * This method should only be used for the first time sending a start bit.
  * To send a start bit in the middle of a packet, use restart_communication_as_read_from.
  *
- * @param address The device's I2C address.
+ * @param address The device's TWI address.
  * @retval 0 Returned if we can't communicate with the given device; e.g. if the device doesn't acknowledge communications.
  * @retval 1 Returned on success.
  */ 
@@ -151,7 +143,7 @@ uint8_t start_twi_read_from(uint8_t address);
  * This method should only be used for the first time sending a start bit.
  * To send a start bit in the middle of a packet, use restart_communication_as_write_to.
  *
- * @param address The device's I2C address.
+ * @param address The device's TWI address.
  * @retval 0 Returned if we can't communicate with the given device; e.g. if the device doesn't acknowledge communications.
  * @retval 1 Returned on success.
  */ 
@@ -164,7 +156,7 @@ uint8_t start_twi_write_to(uint8_t address);
  *
  * You may prefer to use start_twi_read_from / start_twi_write_to.
  * 
- * @param address The device's I2C address.
+ * @param address The device's TWI address.
  * @param direction The communication direction for the given TWI device. Should be either TWI_READ or TWI_WRITE.
  * @retval 0 Returned if we can't communicate with the given device; e.g. if the device doesn't acknowledge communications.
  * @retval 1 Returned on success.
@@ -173,11 +165,11 @@ uint8_t start_twi_communication(uint8_t address, TWIDataDirection direction);
 
 
 /**
- * Attempts to start an I2C communication. If the device responds that it's
+ * Attempts to start an TWI communication. If the device responds that it's
  * not available, retry until the device /is/ available.
  *
  * Use of this function is only appropriate in some limited circumstances,
- * but it is included as to be a complete implementation of the Master I2C library.
+ * but it is included as to be a complete implementation of the Master TWI library.
  */
 void ensure_twi_communication(uint8_t address, TWIDataDirection direction);
 
@@ -204,6 +196,36 @@ uint8_t send_via_twi(uint8_t data);
  * @return The byte read via TWI.
  */
 uint8_t read_via_twi(TWIReadMode read_mode);
+
+
+/**
+ * Performs a given bus pirate command.
+ *
+ * Supports the following features:
+ * {}, [], R/r, 0-255, 0b, 0h, &
+ *
+ * See: http://dangerousprototypes.com/bus-pirate-manual/i2c-guide/ 
+ *
+ * An additional command is also implemented:
+ * s: Requests a single byte, and then responds with a NAK.
+ *
+ * Important note! You'll need to replace your last "r" with an "s",
+ * or the TWI library will "lock up", as the AVR views the transmission
+ * as being incomplete.
+ *
+ * For each read, a pointer should be provided to a uint8_t target.
+ * For example:
+ *
+ *   uint8_t hello;
+ *   perform_bus_pirate_twi_command("[ 0x72 0x80 0x03 [ 0x73 r ]", &hello);
+ *
+ * would read a single byte to the variable hello.
+ *
+ * @param command The bus pirate command, as a null-terminated string.
+ * @param ...     A single uint8_t * for each read command.
+ *
+ */ 
+uint8_t perform_bus_pirate_twi_command(const char * command, ...);
 
 
 /**@}*/
