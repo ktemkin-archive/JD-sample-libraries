@@ -1,4 +1,4 @@
-/**
+/*
  * EECE 387 Example Code
  * Simple TWI (Two Wire Interface) library for TWI-enabled AVRs.
  * 

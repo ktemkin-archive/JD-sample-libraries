@@ -1,0 +1,15 @@
+@import url(http://fonts.googleapis.com/css?family=Oswald);
+
+#titlearea {
+  background-color: #006a4e;
+  color: white;
+  padding-bottom: 15px;
+}
+
+#projectname {
+  font: 262% Oswald, Arial,sans-serif !important;
+}
+
+#projectbrief {
+  font-family: Arial !important;
+}
