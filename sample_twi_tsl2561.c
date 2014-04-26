@@ -72,8 +72,10 @@ int main() {
     printf("Sensor enabled succesfully!\n");
   }
 
-  //Read the device's ID:
-  perform_bus_pirate_twi_command("[ 0x72 0x8A [ 0x73 s ]", &device_id);
+  //Read the device's ID. For this example, we'll use the special "w" syntax, a special form of "write"
+  //which accepts the value to be transmitted as an argument. This allows convenient programmatic control
+  //of values to be transmitted!
+  perform_bus_pirate_twi_command("[ 0x72 w [ 0x73 s ]", 0x8A, &device_id);
   printf("Read device ID: 0x%x\n", device_id);
 
   //Alternatively, one can implement the I2C communications manually, rather

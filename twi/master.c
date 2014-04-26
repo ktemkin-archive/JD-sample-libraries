@@ -324,8 +324,10 @@ uint8_t read_via_twi(TWIReadMode read_mode)
  *
  * See: http://dangerousprototypes.com/bus-pirate-manual/i2c-guide/ 
  *
- * An additional command is also implemented:
- * s: Requests a single byte, and then responds with a NAK.
+ * Two additional commands are also implemented:
+ *  s: Reads a single byte, and then responds with a NAK.
+ *  w: Transmits a single byte, provided as an argument. This allows programatic 
+ *     control of transmission.
  *
  * Important note! You'll need to replace your last "r" with an "s",
  * or the TWI library will "lock up", as the AVR views the transmission
@@ -334,13 +336,25 @@ uint8_t read_via_twi(TWIReadMode read_mode)
  * For each read, a pointer should be provided to a uint8_t target.
  * For example:
  *
+ * @code
  *   uint8_t hello;
  *   perform_bus_pirate_twi_command("[ 0x72 0x80 0x03 [ 0x73 s ]", &hello);
+ * @endcode
  *
  * would read a single byte to the variable hello.
  *
+ * For each _write_, a (non-pointer) uint8_t should be provided.
+ * For example:
+ *
+ * @code
+ *   perform_bus_pirate_twi_command("[ 0x72 0x80 w ]", 0x55);
+ * @endcode 
+ *
+ * would send 0x72 (the address and write bit), then 0x80, and then 0x55.
+ *
+ *
  * @param command The bus pirate command, as a null-terminated string.
- * @param ...     A single uint8_t * for each read command.
+ * @param ...     A single uint8_t * for each read command, or a single uint8_t for each write.
  *
  */ 
 uint8_t perform_bus_pirate_twi_command(const char * command, ...) {
@@ -383,41 +397,51 @@ uint8_t perform_bus_pirate_twi_command(const char * command, ...) {
         break;
 
 
-      //Read a single byte from the TWI device.
+      //Read a single byte from the TWI device, and then
+      //send an acknowledgement, indicating that we expect further data.
       case 'r':
       case 'R':
-
-        //Get the address that the read is targeting...
-        read_target = va_arg(variadic_arguments, uint8_t *);
-
-        //... and then perform the read.
-        *read_target = read_via_twi(RequestMore);
-
-        //... increment the number of total reads, and continue.
-        ++read_count;
-        break;
-
-      //DEBUG
-      //Read a single byte from the TWI device.
       case 's':
       case 'S':
+        {
 
-        //Get the address that the read is targeting...
-        read_target = va_arg(variadic_arguments, uint8_t *);
+          TWIReadMode read_mode;
 
-        //... and then perform the read.
-        *read_target = read_via_twi(LastByte);
+          //If we're been provided the 's' command,
+          //set the read mode to "last byte", which sends
+          //a negative acknowledgement to the device.
+          if(*command == 's' || *command == 'S') {
+            read_mode = LastByte;
+          } 
+          //Otherwise, send an ACK, indiacting that we
+          //would like additional data.
+          else {
+            read_mode = RequestMore;
+          }
+          
+          //Get the address that the read is targeting...
+          read_target = va_arg(variadic_arguments, uint8_t *);
 
-        //... increment the number of total reads, and continue.
-        ++read_count;
-        break;
+          //... and then perform the read.
+          *read_target = read_via_twi(read_mode);
 
+          //... increment the number of total reads, and continue.
+          ++read_count;
+          break;
+        }
 
-      //Delay 1us.
-      case '&':
-        _delay_us(1);
-        break;
+      // Send a single byte via the TWI interface, which should be
+      // provided as an argument.
+      case 'w':
+      case 'W':
 
+        //Since we're writing, this is a transmission.
+        is_transmission = 1;
+
+        //Read the byte that should be transmitted...
+        to_transmit = va_arg(variadic_arguments, unsigned int);
+
+        //... and "roll" directly into the transmit case.
 
       //If we have a delimiter, handle any actions that have been queued.
       case ' ':
@@ -431,6 +455,12 @@ uint8_t perform_bus_pirate_twi_command(const char * command, ...) {
         is_transmission = to_transmit = 0;
         break;
 
+      //Delay 1us.
+      case '&':
+        _delay_us(1);
+        break;
+
+      //In all other cases, check to see if we have a piece of a literal.
       default:
         {
          

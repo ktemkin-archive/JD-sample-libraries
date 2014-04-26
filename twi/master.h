@@ -206,8 +206,10 @@ uint8_t read_via_twi(TWIReadMode read_mode);
  *
  * See: http://dangerousprototypes.com/bus-pirate-manual/i2c-guide/ 
  *
- * An additional command is also implemented:
- * s: Requests a single byte, and then responds with a NAK.
+ * Two additional commands are also implemented:
+ *  s: Reads a single byte, and then responds with a NAK.
+ *  w: Transmits a single byte, provided as an argument. This allows programatic 
+ *     control of transmission.
  *
  * Important note! You'll need to replace your last "r" with an "s",
  * or the TWI library will "lock up", as the AVR views the transmission
@@ -216,13 +218,25 @@ uint8_t read_via_twi(TWIReadMode read_mode);
  * For each read, a pointer should be provided to a uint8_t target.
  * For example:
  *
+ * @code
  *   uint8_t hello;
  *   perform_bus_pirate_twi_command("[ 0x72 0x80 0x03 [ 0x73 s ]", &hello);
+ * @endcode
  *
  * would read a single byte to the variable hello.
  *
+ * For each _write_, a (non-pointer) uint8_t should be provided.
+ * For example:
+ *
+ * @code
+ *   perform_bus_pirate_twi_command("[ 0x72 0x80 w ]", 0x55);
+ * @endcode 
+ *
+ * would send 0x72 (the address and write bit), then 0x80, and then 0x55.
+ *
+ *
  * @param command The bus pirate command, as a null-terminated string.
- * @param ...     A single uint8_t * for each read command.
+ * @param ...     A single uint8_t * for each read command, or a single uint8_t for each write.
  *
  */ 
 uint8_t perform_bus_pirate_twi_command(const char * command, ...);
