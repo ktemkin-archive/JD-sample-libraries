@@ -335,7 +335,7 @@ uint8_t read_via_twi(TWIReadMode read_mode)
  * For example:
  *
  *   uint8_t hello;
- *   perform_bus_pirate_twi_command("[ 0x72 0x80 0x03 [ 0x73 r ]", &hello);
+ *   perform_bus_pirate_twi_command("[ 0x72 0x80 0x03 [ 0x73 s ]", &hello);
  *
  * would read a single byte to the variable hello.
  *
