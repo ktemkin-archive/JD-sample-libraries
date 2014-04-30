@@ -23,11 +23,15 @@ CC=avr-gcc
 CFLAGS=-mmcu=${DEVICE} -DF_CPU=16000000L -ggdb  -Wall -Wextra -Wpedantic -std=gnu11 -Os
 LDFLAGS=-mmcu=${DEVICE}
 
-all: sample_twi_tsl2561.hex sample_uart_stdio.hex
+all: sample_twi_tcs34725.hex sample_twi_tsl2561.hex sample_uart_stdio.hex
 
 #TWI Sample: TSL2561
 sample_twi_tsl2561: sample_twi_tsl2561.o twi/master.o uart/stdio.o
 sample_twi_tsl2561.o: sample_twi_tsl2561.c twi/master.h uart/stdio.h
+
+#TWI Sample: TCS34725
+sample_twi_tcs34725: sample_twi_tcs34725.o twi/master.o uart/stdio.o
+sample_twi_tcw34725.o: sample_twi_tcs34725.c twi/master.h uart/stdio.h
 
 #UART stdio sample
 sample_uart_stdio: sample_uart_stdio.o uart/stdio.o
