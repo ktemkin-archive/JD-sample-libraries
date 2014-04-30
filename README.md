@@ -22,13 +22,15 @@ A simple TWI interface using <a href="http://dangerousprototypes.com/bus-pirate-
 
 int main() {
 
+  uint8_t reading_low, reading_high;
+
   //Set up an I2c communication at 100kHz.
   set_up_twi_hardware(100000);
 
   //And take repeated light sensor readings.
   while(1) {
-    perform_bus_pirate_twi_command("[ 0x72 0xAC [ 0x73 r s ]", &reading.low, &reading.high);
-    printf("Sensor reading: %u\n", reading.full);
+    perform_bus_pirate_twi_command("[ 0x72 0xAC [ 0x73 r s ]", &reading_low, &reading_high);
+    printf("Sensor reading: %d\n", (reading_high << 8) | reading_low);
     _delay_ms(100);
   }
   
@@ -41,7 +43,8 @@ Samples
 
 For more detailed examples, see the top-level code files. Annotated source:
 
-- <a href="http://ktemkin.github.io/JD-sample-libraries/sample__twi__tsl2561_8c.html"> TSL 2561 Demo
-- <a href="http://ktemkin.github.io/JD-sample-libraries/sample__uart__stdio_8c.html"> Serial UART Demo
+- <a href="http://ktemkin.github.io/JD-sample-libraries/sample__twi__tsl2561_8c.html"> TSL 2561 Demo</a>
+- <a href="http://ktemkin.github.io/JD-sample-libraries/sample__twi__tcs34725_8c.html"> TSC 34725 Demo</a>
+- <a href="http://ktemkin.github.io/JD-sample-libraries/sample__uart__stdio_8c.html"> Serial UART Demo</a>
 
 
