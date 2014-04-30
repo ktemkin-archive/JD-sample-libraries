@@ -18,10 +18,36 @@
 # using a modified version of Peter Fleury's I2C Master Library. 
 #
 
+#
+# Basic setup. You should ensure these match your uC's configuration.
+# 
+
+#The name of the microcontroller you're working with.
 DEVICE=atmega328p
+
+#The CPU frequency you're working with.
+#For an Arduino Uno, this should be 16MHz (16000000UL).
+#For an atmega328p using an internal oscillator, this should be either 
+#1MHz (1000000UL) if the CLKDIV8 fuse is set (default) or or 
+#8MHz (1000000UL) if the fuse has not been set.
+F_CPU=16000000UL
+
+#The baud rate of any relevant serial transmissions. If you're using
+#an Arduino Uno, this should be 115200. If you're using the bpserial
+#scriptm, this should be 9600.
+BAUD=115200UL
+
+#
+# Define the C compiler parameters, as used by the implicit rules for
+# compiling C.
+#
 CC=avr-gcc
-CFLAGS=-mmcu=${DEVICE} -DF_CPU=16000000L -ggdb  -Wall -Wextra -std=gnu11 -Os
 LDFLAGS=-mmcu=${DEVICE}
+CFLAGS=-mmcu=${DEVICE} -DF_CPU=${F_CPU} -DBAUD=${BAUD} -ggdb  -Wall -Wextra -std=gnu11 -Os
+
+#
+# Compilation rules:
+#
 
 all: sample_twi_tcs34725.hex sample_twi_tsl2561.hex sample_uart_stdio.hex
 
