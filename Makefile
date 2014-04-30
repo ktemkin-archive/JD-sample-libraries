@@ -20,7 +20,7 @@
 
 DEVICE=atmega328p
 CC=avr-gcc
-CFLAGS=-mmcu=${DEVICE} -DF_CPU=16000000L -ggdb  -Wall -Wextra -Wpedantic -std=gnu11 -Os
+CFLAGS=-mmcu=${DEVICE} -DF_CPU=16000000L -ggdb  -Wall -Wextra -std=gnu11 -Os
 LDFLAGS=-mmcu=${DEVICE}
 
 all: sample_twi_tcs34725.hex sample_twi_tsl2561.hex sample_uart_stdio.hex
