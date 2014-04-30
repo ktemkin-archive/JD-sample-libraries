@@ -177,7 +177,7 @@ Functions</h2></td></tr>
 
 <p>Definition at line <a class="el" href="master_8c_source.html#l00265">265</a> of file <a class="el" href="master_8c_source.html">master.c</a>.</p>
 
-<p>Referenced by <a class="el" href="master_8c_source.html#l00230">ensure_twi_communication()</a>, <a class="el" href="sample__twi__tsl2561_8c_source.html#l00052">main()</a>, and <a class="el" href="master_8c_source.html#l00360">perform_bus_pirate_twi_command()</a>.</p>
+<p>Referenced by <a class="el" href="master_8c_source.html#l00230">ensure_twi_communication()</a>, <a class="el" href="sample__twi__tcs34725_8c_source.html#l00052">main()</a>, and <a class="el" href="master_8c_source.html#l00360">perform_bus_pirate_twi_command()</a>.</p>
 <div class="fragment"><div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;{</div>
 <div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;  <span class="comment">//Terminate the active TWI packet by sending a stop condition.</span></div>
 <div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;  <span class="comment">// The following Two Wire Control Register bits are set:</span></div>
@@ -303,7 +303,7 @@ Functions</h2></td></tr>
 
 <p>References <a class="el" href="master_8c_source.html#l00265">end_twi_packet()</a>, <a class="el" href="master_8h_source.html#l00109">LastByte</a>, <a class="el" href="master_8c_source.html#l00303">read_via_twi()</a>, <a class="el" href="master_8h_source.html#l00107">RequestMore</a>, <a class="el" href="master_8c_source.html#l00137">send_twi_start_condition()</a>, and <a class="el" href="master_8c_source.html#l00286">send_via_twi()</a>.</p>
 
-<p>Referenced by <a class="el" href="sample__twi__tsl2561_8c_source.html#l00052">main()</a>.</p>
+<p>Referenced by <a class="el" href="sample__twi__tcs34725_8c_source.html#l00052">main()</a>.</p>
 <div class="fragment"><div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;                                                                  {</div>
 <div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;</div>
 <div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;</div>
@@ -488,7 +488,7 @@ Functions</h2></td></tr>
 
 <p>Definition at line <a class="el" href="master_8c_source.html#l00303">303</a> of file <a class="el" href="master_8c_source.html">master.c</a>.</p>
 
-<p>Referenced by <a class="el" href="sample__twi__tsl2561_8c_source.html#l00052">main()</a>, and <a class="el" href="master_8c_source.html#l00360">perform_bus_pirate_twi_command()</a>.</p>
+<p>Referenced by <a class="el" href="sample__twi__tcs34725_8c_source.html#l00052">main()</a>, and <a class="el" href="master_8c_source.html#l00360">perform_bus_pirate_twi_command()</a>.</p>
 <div class="fragment"><div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;{</div>
 <div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;    <span class="comment">//Ininitate a TWI read.</span></div>
 <div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;    <span class="comment">// The following Two Wire Control Register bits are set:</span></div>
@@ -566,7 +566,7 @@ Functions</h2></td></tr>
 
 <p>Definition at line <a class="el" href="master_8c_source.html#l00286">286</a> of file <a class="el" href="master_8c_source.html">master.c</a>.</p>
 
-<p>Referenced by <a class="el" href="sample__twi__tsl2561_8c_source.html#l00052">main()</a>, and <a class="el" href="master_8c_source.html#l00360">perform_bus_pirate_twi_command()</a>.</p>
+<p>Referenced by <a class="el" href="sample__twi__tcs34725_8c_source.html#l00052">main()</a>, and <a class="el" href="master_8c_source.html#l00360">perform_bus_pirate_twi_command()</a>.</p>
 <div class="fragment"><div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;{   </div>
 <div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;  <span class="comment">//Write the given byte to the TWI interface...</span></div>
 <div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;  uint8_t twi_status = raw_twi_write(data);</div>
@@ -603,7 +603,7 @@ Functions</h2></td></tr>
 
 <p>Definition at line <a class="el" href="master_8c_source.html#l00073">73</a> of file <a class="el" href="master_8c_source.html">master.c</a>.</p>
 
-<p>Referenced by <a class="el" href="sample__twi__tsl2561_8c_source.html#l00052">main()</a>.</p>
+<p>Referenced by <a class="el" href="sample__twi__tcs34725_8c_source.html#l00052">main()</a>.</p>
 <div class="fragment"><div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;{</div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;</div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;  uint8_t  prescaler = -1;</div>
@@ -737,7 +737,7 @@ Functions</h2></td></tr>
 
 <p>References <a class="el" href="master_8h_source.html#l00097">Read</a>, and <a class="el" href="master_8c_source.html#l00167">start_twi_communication()</a>.</p>
 
-<p>Referenced by <a class="el" href="sample__twi__tsl2561_8c_source.html#l00052">main()</a>.</p>
+<p>Referenced by <a class="el" href="sample__twi__tcs34725_8c_source.html#l00052">main()</a>.</p>
 <div class="fragment"><div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;                                             {</div>
 <div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;  <span class="keywordflow">return</span> <a class="code" href="master_8c.html#a322b07f570ec940b6391c288bef3b325">start_twi_communication</a>(address, <a class="code" href="master_8h.html#a274f02d50b700acf2f7acb0a1777cbb1a809abe96853e69894bbf8e5730b31348">Read</a>);</div>
 <div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;}</div>
@@ -779,7 +779,7 @@ Functions</h2></td></tr>
 
 <p>References <a class="el" href="master_8c_source.html#l00167">start_twi_communication()</a>, and <a class="el" href="master_8h_source.html#l00098">Write</a>.</p>
 
-<p>Referenced by <a class="el" href="sample__twi__tsl2561_8c_source.html#l00052">main()</a>.</p>
+<p>Referenced by <a class="el" href="sample__twi__tcs34725_8c_source.html#l00052">main()</a>.</p>
 <div class="fragment"><div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;                                            {</div>
 <div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;  <span class="keywordflow">return</span> <a class="code" href="master_8c.html#a322b07f570ec940b6391c288bef3b325">start_twi_communication</a>(address, <a class="code" href="master_8h.html#a274f02d50b700acf2f7acb0a1777cbb1aa56670174817e3fed92bfd8182d7c0d1">Write</a>);</div>
 <div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;}</div>
@@ -794,7 +794,7 @@ Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_41b1d9bc16cdb044014c0b5b65110baf.html">twi</a></li><li class="navelem"><a class="el" href="master_8c.html">master.c</a></li>
-    <li class="footer">Generated on Sat Apr 26 2014 02:17:28 for JD Sample Libraries by
+    <li class="footer">Generated on Tue Apr 29 2014 21:19:47 for JD Sample Libraries by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>
